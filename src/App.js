@@ -1,26 +1,42 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
+import Nav from './components/navigation';
+import Top from './components/top';
+import Home from './components/home'
+import Calendar from './components/calendar'
+import axios from 'axios'
+import {BrowserRouter as Router,Switch,Route} from 'react-router-dom'
 
-function App() {
+class App extends Component {
+  constructor(props){
+    super(props);
+    this.state={
+      data:[]
+    }
+  }
+  componentDidMount(){
+    axios.get("https://gorest.co.in/public-api/users")
+    .then((result)=>{
+      result=result.data.data
+      this.setState({data:result})
+    })
+  }
+  
+render(){
   return (
+    <Router>
+      
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Top></Top>
+        <Switch>
+          <Route path='/calendar' ><Calendar data={this.state.data}/></Route>
+          <Route exact path='/'><Home data={this.state.data}/></Route>
+        </Switch> 
+      <Nav></Nav>
     </div>
-  );
+    </Router>
+      
+  )
+}
 }
 
 export default App;
